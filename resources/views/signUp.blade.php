@@ -48,7 +48,7 @@
                                             <div class="form-outline flex-fill mb-0">
                                                 <label class="form-label" for="form3Example3c">Your Email</label>
                                                 <input type="email" id="form3Example3c" class="form-control"
-                                                    name='username' required value="{{ old('username') }}" />
+                                                    name='username' required value="{{ Session::get('msg') }}" />
                                             </div>
                                         </div>
 
@@ -71,17 +71,24 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-check d-flex justify-content-center mb-5">
+                                        <div class="form-check d-flex justify-content-center mb-2">
                                             <input class="form-check-input me-2" type="checkbox" value=""
                                                 id="check_" checked required />
                                             <label class="form-check-label" for="check_">
                                                 I agree all statements in <a href="#!">Terms of service</a>
                                             </label>
-                                        </div>
 
+                                        </div>
+                                        <div class="form-check d-flex justify-content-center mb-5">
+
+                                            <p class="small fw-bold pt-1 mb-0">Have an account? <a
+                                                    href="{{ route('home') }}" class="link-danger">Sign In</a>
+                                            </p>
+                                        </div>
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                             <button id="btn-sub" type="submit"
                                                 class="btn btn-primary btn-lg col-8">Register</button>
+
                                         </div>
                                         @csrf
 

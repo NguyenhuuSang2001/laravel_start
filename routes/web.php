@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SignUpController;
+use App\Http\Controllers\SignInController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,8 +15,10 @@ use App\Http\Controllers\SignUpController;
 */
 
 Route::get('/', function () {
-    return view('signUp');
-});
+    return redirect()->route('signIn.index');
+})->name('home');
 
 
 Route::resource('signUp', SignUpController::class);
+Route::resource('signIn', SignInController::class);
+Route::post('signIn', [SignInController::class, 'check']);

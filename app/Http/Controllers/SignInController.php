@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Users;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
-class SignUpController extends Controller
+class SignInController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +15,9 @@ class SignUpController extends Controller
      */
     public function index()
     {
-
-        if (session()->has('username')) {
-            $allUser = Users::all();
-            return view('showAll', compact('allUser'));
-        }
-        return redirect(route('signIn.index'));
+        if (session()->has('username'))
+            return redirect(route('signUp.index'));
+        return view('signIn');
     }
 
     /**
@@ -30,14 +27,6 @@ class SignUpController extends Controller
      */
     public function create()
     {
-        if (session()->has('username'))
-            return redirect(route('signUp.index'));
-        if (Cookie::has('username')) {
-            session()->put('username', Cookie::get('username'));
-            return redirect(route('signUp.index'));
-        }
-
-        return view('signUp');
     }
 
     /**
@@ -48,25 +37,6 @@ class SignUpController extends Controller
      */
     public function store(Request $request)
     {
-        if (isset($request['logout'])) {
-            session()->flush();
-            Cookie::expire('username');
-            return redirect()->back();
-        }
-        $user = new Users();
-        if (!$user->checkSignUp($request)) {
-            return redirect()->back()->with('msg', $request['username']);
-
-            // return (view('signUp', compact('msg')));
-        }
-        $user = Users::create([
-            'username' => $request['username'],
-            'password' => md5($request['password'])
-        ]);
-        // dd($user);
-        session()->put('username', $request->username);
-        Cookie::queue('username', $request->username);
-        return redirect(route('signUp.index'));
     }
 
     /**
@@ -112,5 +82,18 @@ class SignUpController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function check(Request $request)
+    {
+        $user = new Users();
+        if ($user->checkSignIn($request)) {
+            session()->put('username', $request->username);
+            Cookie::queue('username', $request->username);
+
+            return redirect(route('signUp.index'));
+        }
+        return redirect()->back()->with('msg', 'error');;
+        // dd($request);
     }
 }
