@@ -48,6 +48,7 @@
 <body>
 
 
+
     <section class="intro">
 
         <div class="gradient-custom-1 h-100">
@@ -56,7 +57,35 @@
                 <button class="btn btn-primary mt-3" type="submit" name="logout">Logout</button>
             </form>
 
-            <div class="mask d-flex align-items-center h-100">
+            <div class="mask flex-column d-flex align-items-center h-100">
+                <div class="contrainer">
+                    <form action="" method="get">
+                        <div class="row">
+                            <div class="col-3">
+                                <select class="form-control" name="group">
+                                    <option value="0">Tất cả các nhóm</option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <select class="form-control" name="time">
+                                    <option value="0" {{ request()->time === '0' ? 'selected' : false }}>Tất cả
+                                        thời
+                                        gian</option>
+                                    <option value="1" {{ request()->time === '1' ? 'selected' : false }}>1 tháng
+                                        gần
+                                        đây</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <input type="search" name="keywords" class="form-control"
+                                    value="{{ request()->keywords }}" placeholder="Nhập từ khóa tìm kiếm">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-primary btn-block" type="submit">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-6">
@@ -65,8 +94,15 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center" scope="col">STT</th>
-                                            <th scope="col">User Name</th>
-                                            <th scope="col">Date Create at</th>
+                                            <th scope="col"><a
+                                                    href="?keywords={{ request()->keywords }}&sort-by=email&sort-type={{ isset($sortType) ? $sortType : 'asc' }} 
+                                                    ">Email</a>
+                                            </th>
+                                            <th scope="col"><a
+                                                    href="?keywords={{ request()->keywords }}&sort-by=created_at&sort-type={{ isset($sortType) ? $sortType : '' }}">Ngày
+                                                    tạo</a>
+                                            </th>
+                                            {{-- <th scope="col">Ngày tạo</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,12 +118,18 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="d-flex justify-content-end">
+                                {{ $allUser->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
+
+
 </body>
 
 </html>

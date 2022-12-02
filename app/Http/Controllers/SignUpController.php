@@ -8,17 +8,32 @@ use Illuminate\Support\Facades\Cookie;
 
 class SignUpController extends Controller
 {
+    private $users;
+    public function __construct()
+    {
+        $this->users = new Users();
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        $sortType = 'asc';
+        (isset($request['sort-type']) && $request['sort-type'] === 'asc') ? ($sortType = 'desc') : '';
+        $sortBy = isset($request['sort-by']) ? $request['sort-by'] : 'created_at';
+        $sortBy = ($sortBy == 'email' ? 'username' : $sortBy);
+        $arrSort = [
+            'by' => $sortBy,
+            'type' => $sortType
+        ];
         if (session()->has('username')) {
-            $allUser = Users::all();
-            return view('showAll', compact('allUser'));
+            if (isset($request->keywords))
+                $allUser = $this->users->getAll($request->keywords, $arrSort);
+            else
+                $allUser = $this->users->getAll(null, $arrSort);
+            return view('showAll', compact('allUser', 'sortType'));
         }
         return redirect(route('signIn.index'));
     }
@@ -59,10 +74,16 @@ class SignUpController extends Controller
 
             // return (view('signUp', compact('msg')));
         }
+        // dd($request);
+
         $user = Users::create([
             'username' => $request['username'],
             'password' => md5($request['password'])
         ]);
+
+        // $user['username'] = $request['username'];
+        // $user['password'] = md5($request['password']);
+        // $user->save();
         // dd($user);
         session()->put('username', $request->username);
         Cookie::queue('username', $request->username);

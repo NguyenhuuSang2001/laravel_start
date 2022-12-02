@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Cookie;
 
 class SignInController extends Controller
 {
+    private $users;
+    public function __construct()
+    {
+        $this->users = new Users();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -86,8 +91,7 @@ class SignInController extends Controller
 
     public function check(Request $request)
     {
-        $user = new Users();
-        if ($user->checkSignIn($request)) {
+        if ($this->users->checkSignIn($request)) {
             session()->put('username', $request->username);
             Cookie::queue('username', $request->username);
 
